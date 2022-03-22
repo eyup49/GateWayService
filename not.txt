@@ -1,0 +1,54 @@
+Api Gateway nedir?
+Diyelimki bir microservice dönüþümü içindesiniz veya yeni projenizde microservice mimari yapýsýný uygulamaya karar verdiniz.
+Bu proje örneðimiz herkesin az çok fikir sahibi olmasýndan dolayý E-Ticaret olsun. Hadi gelin sadece ürün detayý ile ilgili
+ihtiyaç olunan servislerden bahsedelim.
+Sayfayý oluþturalým. www.example.com/products/1 dedik. Catalog servisinden ürünü aldýk. Price servisinden ürünle ilgili fiyat ve kampanya
+fiyatlarýný aldýk. Ürünle ilgili görselleri cdn servisimizden aldýk, User servisinden kullanýcý bilgilerini aldýk,ürün yorumlarý ve
+bu yorumlar iþlenerek çýkan sonuçlarý details(isim aklýma gelmedi) servisimden aldýk, ürünle iliþkili veya kullanýcýn ilgili 
+çekecek ek ürünler için data servislerimizin birini call ettik. Bir bakýþta ürün ile ilgili sayafa için 6–7 servis sayabildik.
+Bu servislerinden kendine has adresleri var. Yüzlerce servisimiz olduðunu varsayalým. Hepsini ayrý bir url ve authorization,
+rate-limit vs olduðunuda düþünürsek iþiniz içinden çýkýlmaz bir hal alýyor.
+
+https://microservices.io/ adresinden alýnmýþtýr.
+Ýþte bu noktada Api Gateway Pattern devreye giriyor. Servislerimize tek bir giriþ noktasý oluþturup tüm servisler için ortak iþlemlerin 
+tek bir yerden yapýlmasýna olanak saðlýyor.
+Api Gateway patternin bize saðladýðý bazý iþlevsellikler;
+Authentication-Authorization
+Reques-Response Logging
+Response Cache
+CorrelationId for Logging
+Circiut Breaker
+Retry
+Rate Limit
+Response Cache
+IP White Or Black list
+
+Microservice yapýlanmasýný benimseyen uygulamalarda clientlardan gelen istekleri iþlevsel açýdan uygun servislere yönlendirmekten sorumlu
+bir geçiþ görevi gören API Gateway kütüphanesidir. Ocelot, clienttan gelen istek neticesinde oluþturulan HttpRequest nesnesini
+arkaplandaki servislere iletebilmek için HttpRequestMessage nesnesi oluþturmakta ve bu þekilde ulaþtýrmakla görevli middleware’dir. 
+Ocelot, uygulamanýn pipeline’ýnda ki son ara katmandýr diyebiliriz ve bu yüzden bir sonraki middleware çaðrýlmamaktadýr.
+
+
+Konfigürasyonu izah etmemiz gerekirse eðer;
+
+DownstreamPathTemplate
+Yönlendirme yapýlacak microservice’in route’unu tutmaktadýr.
+DownstreamScheme
+Ýlgili microservice’e yapýlacak isteðin hangi protokol üzerinden gerçekleþtirileceðini bildirmektedir.
+
+
+DownstreamHostAndPorts
+Microservice’in ‘Host’ ve ‘Port’ bilgilerini tutmaktadýr.
+UpstreamPathTemplate
+API Gateway üzerinden microservice’e yapýlacak yönlendirmenin route’unu tutmaktadýr.
+UpstreamHttpMethod
+Hangi isteklerin yapýlabileceði bildirilmektedir.
+þeklinde tanýmlama yapabiliriz.
+
+Yapýlan tanýmlarý atlamayalým.
+UpstreamPathTemplate:ApiGateway servisimize gelecek requestin route’ý belirlenmektedir.
+UpstreamHttpMethod: ApiGateway request’in http werb’i(Http method) tanmlanmaktadýr.
+DownstreamPathTemplate: Gelen request’e karþýlýk eþleþtirilecek servisin route bilgisi tanýmlanmaktadýr.
+DownstreamHostAndPorts: Eþleþtirilen route’un host ve port bilgisi tanýmlanmaktadýr.
+DownstreamScheme: Eþleþtirilen route için tanýmlanan DownstreamHostAndPorts bilgisi için protokol tanýmlanmaktadýr.(http, https ..)
+GlobalConfiguration.BaseUrl ile de api gateway’imizin url bilgisi tanýmlanmaktadýr.
